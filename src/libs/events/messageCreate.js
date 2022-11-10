@@ -1,5 +1,5 @@
 const logger = require("../logger");
-const {User} = require('../database/models');
+const {CountingChannel} = require('../database/models');
 
 
 module.exports = async (e) => {
@@ -7,8 +7,15 @@ module.exports = async (e) => {
 
     if(e.author.bot === true) return;
 
-    let user = await User.findOne({where: {discordSnowflake: e.author.id}});
-    if(!user){
-        user = await new User({discordSnowflake: e.author.id}).save();
+    const countingChannel = await CountingChannel.findOne({where: {channelId: e.channel.id}});
+
+    if(countingChannel){
+        const mappedCountingChannel = countingChannel.get();
+        if(Number(e.content) === mappedCountingChannel.currentNumber + 1){
+            await CountingChannel.update({currentNumber: mappedCountingChannel.currentNumber + 1}, {where: {channelId: e.channel.id}});
+        } else {
+            await CountingChannel.update({currentNumber: 0}, {where: {channelId: e.channel.id}});
+            await e.reply('Counting has restarted from 0');
+        }
     }
 };
