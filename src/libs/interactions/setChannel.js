@@ -8,7 +8,7 @@ module.exports = {
                             .addChannelOption(opt => opt.setName('channel').setDescription('The channel to count in')),
     async execute(interaction, user) {
         const channel = interaction.options.get('channel').value;
-        await new CountingChannel({channelId: channel, currentNumber: 0}).save();
+        await new CountingChannel({channelId: channel, currentNumber: 0, guildId: interaction.guild.id, maxCount: 0,}).save();
 
         await interaction.reply('Succesfully set counting channel!');
     }

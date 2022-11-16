@@ -12,7 +12,12 @@ module.exports = async (e) => {
     if(countingChannel){
         const mappedCountingChannel = countingChannel.get();
         if(Number(e.content) === mappedCountingChannel.currentNumber + 1){
-            await CountingChannel.update({currentNumber: mappedCountingChannel.currentNumber + 1}, {where: {channelId: e.channel.id}});
+            const currentNumber = mappedCountingChannel.currentNumber + 1;
+            const updateObject = {currentNumber: currentNumber};
+            if(mappedCountingChannel.maxCount < currentNumber){
+                updateObject.maxCount = currentNumber;
+            }
+            await CountingChannel.update(updateObject, {where: {channelId: e.channel.id}});
         } else {
             await CountingChannel.update({currentNumber: 0}, {where: {channelId: e.channel.id}});
             await e.reply('Counting has restarted from 0');

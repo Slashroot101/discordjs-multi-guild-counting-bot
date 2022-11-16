@@ -15,7 +15,13 @@ CountingServer.init(
         },
         currentNumber: {
             type: DataTypes.INTEGER,
-        }
+        },
+        maxCount: {
+            type: DataTypes.INTEGER,
+        },
+        guildId: {
+            type: DataTypes.STRING,
+        },
     },
     {
         paranoid: true,
